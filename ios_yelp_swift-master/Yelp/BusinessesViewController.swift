@@ -33,6 +33,18 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
       }
     })
     
+    
+    // Set up Infinite Scroll loading indicator
+    let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
+    loadingMoreView = InfiniteScrollActivityView(frame: frame)
+    loadingMoreView!.hidden = true
+    tableView.addSubview(loadingMoreView!)
+    
+    var insets = tableView.contentInset;
+    insets.bottom += InfiniteScrollActivityView.defaultHeight;
+    tableView.contentInset = insets
+
+    
     /* Example of Yelp search with more search options specified
     Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
     self.businesses = businesses
@@ -76,5 +88,50 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   // Pass the selected object to the new view controller.
   }
   */
+  // MARK Scroll view support
   
+  var isMoreDataLoading = false
+  var loadingMoreView: InfiniteScrollActivityView!
+  
+}
+
+extension BusinessesViewController: UIScrollViewDelegate {
+  
+  func loadMoreData() {
+    
+    Business.searchWithTerm("Thai", sort: nil, categories: nil, deals: nil, limit:20, offset: businesses.count) { (businesses, error) -> Void in
+      // Update flag
+      self.isMoreDataLoading = false
+      
+      // ... Use the new data to update the data source ...
+      let currentCount = self.businesses!.count
+      self.businesses!.appendContentsOf(businesses)
+      var indices: [NSIndexPath] = []
+      for i in 0..<businesses.count {
+        indices.append(NSIndexPath(forRow: currentCount + i, inSection: 0))
+      }
+      self.tableView.insertRowsAtIndexPaths(indices, withRowAnimation: .Automatic)
+    }
+  }
+  
+  
+  func scrollViewDidScroll(scrollView: UIScrollView) {
+    if (!isMoreDataLoading) {
+      
+      let scrollViewContentHeight = tableView.contentSize.height
+      let scrollOffsetThreshold = scrollViewContentHeight - tableView.bounds.height * 2
+      
+      if (scrollView.contentOffset.y > scrollOffsetThreshold && tableView.dragging) {
+        isMoreDataLoading = true
+        
+        // Update position of loadingMoreView, and start loading indicator
+        let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView.frame = frame
+        loadingMoreView.startAnimating()
+        
+        loadMoreData()
+      }
+    }
+  }
+
 }

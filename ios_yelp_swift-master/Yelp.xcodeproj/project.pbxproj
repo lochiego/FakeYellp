@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07237E0F1C6DAD1E0057FFF4 /* InfiniteScrollActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07237E0E1C6DAD1E0057FFF4 /* InfiniteScrollActivityView.swift */; };
 		07D56A921C6980A00001DB78 /* BusinessCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D56A911C6980A00001DB78 /* BusinessCell.swift */; };
 		222D8A5B19CCF9F900D2DB53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222D8A5A19CCF9F900D2DB53 /* AppDelegate.swift */; };
 		222D8A6019CCF9F900D2DB53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 222D8A5E19CCF9F900D2DB53 /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07237E0E1C6DAD1E0057FFF4 /* InfiniteScrollActivityView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfiniteScrollActivityView.swift; sourceTree = "<group>"; };
 		07D56A911C6980A00001DB78 /* BusinessCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BusinessCell.swift; sourceTree = "<group>"; };
 		222D8A5519CCF9F900D2DB53 /* Yelp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yelp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		222D8A5919CCF9F900D2DB53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -70,6 +72,7 @@
 		07D56A901C6980850001DB78 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				07237E0E1C6DAD1E0057FFF4 /* InfiniteScrollActivityView.swift */,
 				07D56A911C6980A00001DB78 /* BusinessCell.swift */,
 			);
 			name = Views;
@@ -330,6 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07237E0F1C6DAD1E0057FFF4 /* InfiniteScrollActivityView.swift in Sources */,
 				07D56A921C6980A00001DB78 /* BusinessCell.swift in Sources */,
 				22AAAA9C1AEA1EC300A544AF /* BusinessesViewController.swift in Sources */,
 				22AAAA991AEA0A9700A544AF /* Business.swift in Sources */,
