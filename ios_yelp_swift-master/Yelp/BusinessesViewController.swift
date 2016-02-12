@@ -14,8 +14,18 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   
   @IBOutlet weak var tableView: UITableView!
   
+  var searchController: UISearchController!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    searchController = UISearchController(searchResultsController: nil)
+    searchController.searchResultsUpdater = self
+    searchController.dimsBackgroundDuringPresentation = false
+    searchController.searchBar.sizeToFit()
+    self.navigationItem.titleView = searchController.searchBar
+    searchController.searchBar.delegate = self
+    searchController.hidesNavigationBarDuringPresentation = false
     
     tableView.dataSource = self
     tableView.delegate = self
@@ -26,11 +36,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
       self.businesses = businesses
       
       self.tableView.reloadData()
-      
-      for business in businesses {
-        print(business.name!)
-        print(business.address!)
-      }
     })
     
     
@@ -95,14 +100,30 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   
 }
 
+extension BusinessesViewController: UISearchResultsUpdating, UISearchBarDelegate {
+  
+  func updateSearchResultsForSearchController(searchController: UISearchController) {
+    if let searchText = searchController.searchBar.text {
+      businesses = searchText.isEmpty ? businesses : businesses.filter({(business: Business) -> Bool in
+        return business.categories!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+      })
+      
+      tableView.reloadData()
+    }
+  }
+  
+  func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+    searchController.searchBar.text = ""
+    self.tableView.reloadData()
+  }
+  
+}
+
 extension BusinessesViewController: UIScrollViewDelegate {
   
   func loadMoreData() {
     
     Business.searchWithTerm("Thai", sort: nil, categories: nil, deals: nil, limit:20, offset: businesses.count) { (businesses, error) -> Void in
-      // Update flag
-      self.isMoreDataLoading = false
-      
       // ... Use the new data to update the data source ...
       let currentCount = self.businesses!.count
       self.businesses!.appendContentsOf(businesses)
@@ -111,6 +132,11 @@ extension BusinessesViewController: UIScrollViewDelegate {
         indices.append(NSIndexPath(forRow: currentCount + i, inSection: 0))
       }
       self.tableView.insertRowsAtIndexPaths(indices, withRowAnimation: .Automatic)
+      
+      self.loadingMoreView.stopAnimating()
+      
+      // Update flag
+      self.isMoreDataLoading = false
     }
   }
   
