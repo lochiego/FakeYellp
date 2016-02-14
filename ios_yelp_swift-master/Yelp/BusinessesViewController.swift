@@ -98,6 +98,10 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     return cell
   }
   
+  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    tableView.deselectRowAtIndexPath(indexPath, animated: true)
+  }
+  
   /*
   // MARK: - Navigation
   
