@@ -104,11 +104,10 @@ extension BusinessesViewController: UISearchResultsUpdating, UISearchBarDelegate
   
   func updateSearchResultsForSearchController(searchController: UISearchController) {
     if let searchText = searchController.searchBar.text {
-      businesses = searchText.isEmpty ? businesses : businesses.filter({(business: Business) -> Bool in
-        return business.categories!.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil
+      Business.searchWithTerm(searchText, sort: .BestMatched, categories: ["restaurants"], deals: nil, completion: { (businesses, error) -> Void in
+        self.businesses = businesses
+        self.tableView.reloadData()
       })
-      
-      tableView.reloadData()
     }
   }
   
