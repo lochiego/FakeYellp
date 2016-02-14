@@ -27,12 +27,18 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     searchController.searchBar.delegate = self
     searchController.hidesNavigationBarDuringPresentation = false
     
+    if #available(iOS 9.0, *) {
+        UIBarButtonItem.appearanceWhenContainedInInstancesOfClasses([UISearchBar.self]).tintColor = UIColor.whiteColor()
+    } else {
+      UIBarButtonItem.appearance().tintColor = UIColor.whiteColor()
+    }
+    
     tableView.dataSource = self
     tableView.delegate = self
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 120
     
-    Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
+    Business.searchWithTerm("Mexican", completion: { (businesses: [Business]!, error: NSError!) -> Void in
       self.businesses = businesses
       
       self.tableView.reloadData()
