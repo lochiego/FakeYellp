@@ -1,8 +1,8 @@
-# Project 3 - *FakeYellp*
+# Project 3 - *FakeYelp*
 
-**FakeYellp** is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
+**FakeYelp** is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
 
-Time spent: **2** hours spent in total
+Time spent: **4** hours spent in total
 
 ## User Stories
 
@@ -15,34 +15,34 @@ The following **required** functionality is completed:
 The following **optional** features are implemented:
 
 - [ ] Search results page
-   - [ ] Infinite scroll for restaurant results.
+   - [X] Infinite scroll for restaurant results.
    - [ ] Implement map view of restaurant results.
 - [ ] Implement the restaurant detail page.
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [X] Attempted to use location services (simulator behaves differently?)
 
 Please list two areas of the assignment you'd like to **discuss further with your peers** during the next class (examples include better ways to implement something, how to extend your app in certain ways, etc):
 
-1. 
-2. 
+1. Map APIs
+2. Searching by categories
 
 ## Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
-
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/9ZLeQgo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
 Describe any challenges encountered while building the app.
+Using location services from the simulator. Also trying to find a good way to search by terms.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright 2016 Eric Gonzalez
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
