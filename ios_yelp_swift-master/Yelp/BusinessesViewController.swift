@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class BusinessesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
   
@@ -15,6 +16,7 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   @IBOutlet weak var tableView: UITableView!
   
   var searchController: UISearchController!
+  var locationManager: CLLocationManager!
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -38,13 +40,6 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     tableView.rowHeight = UITableViewAutomaticDimension
     tableView.estimatedRowHeight = 120
     
-    Business.searchWithTerm("Mexican", completion: { (businesses: [Business]!, error: NSError!) -> Void in
-      self.businesses = businesses
-      
-      self.tableView.reloadData()
-    })
-    
-    
     // Set up Infinite Scroll loading indicator
     let frame = CGRectMake(0, tableView.contentSize.height, tableView.bounds.size.width, InfiniteScrollActivityView.defaultHeight)
     loadingMoreView = InfiniteScrollActivityView(frame: frame)
@@ -55,6 +50,19 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
     insets.bottom += InfiniteScrollActivityView.defaultHeight;
     tableView.contentInset = insets
 
+    let locationStatus = CLLocationManager.authorizationStatus()
+    if !(locationStatus == .Restricted || locationStatus == .Denied) {
+      locationManager = CLLocationManager()
+      locationManager.delegate = self
+      
+      
+      locationManager.desiredAccuracy = kCLLocationAccuracyKilometer
+      locationManager.distanceFilter = 500
+      
+      if locationStatus == .NotDetermined {
+        locationManager.requestWhenInUseAuthorization()
+      }
+    }
     
     /* Example of Yelp search with more search options specified
     Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
@@ -104,13 +112,14 @@ class BusinessesViewController: UIViewController, UITableViewDataSource, UITable
   var isMoreDataLoading = false
   var loadingMoreView: InfiniteScrollActivityView!
   
+  var currentLocation: CLLocation?
 }
 
 extension BusinessesViewController: UISearchResultsUpdating, UISearchBarDelegate {
   
   func updateSearchResultsForSearchController(searchController: UISearchController) {
     if let searchText = searchController.searchBar.text {
-      Business.searchWithTerm(searchText, sort: .BestMatched, categories: ["restaurants"], deals: nil, completion: { (businesses, error) -> Void in
+      Business.searchWithTerm(searchText, sort: .BestMatched, categories: ["restaurants"], deals: nil, location: currentLocation?.coordinate, completion: { (businesses, error) -> Void in
         self.businesses = businesses
         self.tableView.reloadData()
       })
@@ -127,8 +136,8 @@ extension BusinessesViewController: UISearchResultsUpdating, UISearchBarDelegate
 extension BusinessesViewController: UIScrollViewDelegate {
   
   func loadMoreData() {
-    
-    Business.searchWithTerm("Thai", sort: nil, categories: nil, deals: nil, limit:20, offset: businesses.count) { (businesses, error) -> Void in
+    let searchText = searchController.searchBar.text
+    Business.searchWithTerm(searchText == nil ? "Mexican" : searchText!, sort: nil, categories: nil, deals: nil, location:currentLocation?.coordinate, limit:20, offset: businesses.count) { (businesses, error) -> Void in
       // ... Use the new data to update the data source ...
       let currentCount = self.businesses!.count
       self.businesses!.appendContentsOf(businesses)
@@ -165,4 +174,42 @@ extension BusinessesViewController: UIScrollViewDelegate {
     }
   }
 
+}
+
+extension BusinessesViewController: CLLocationManagerDelegate
+{
+  
+  func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+    if error.code == CLError.Denied.rawValue {
+      locationManager.stopUpdatingLocation()
+    }
+  }
+  
+  func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+    
+    if status == .AuthorizedWhenInUse {
+      if #available(iOS 9.0, *) {
+        locationManager.requestLocation()
+      } else {
+        locationManager.startUpdatingLocation()
+      }
+
+    }
+    
+    Business.searchWithTerm("Mexican", completion: { (businesses: [Business]!, error: NSError!) -> Void in
+      self.businesses = businesses
+      
+      self.tableView.reloadData()
+    })
+    
+  }
+  
+  func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    let lastMinute = NSDate().dateByAddingTimeInterval(-60)
+    if let newLocation = locations.last where newLocation.timestamp.laterDate(lastMinute) === lastMinute {
+      currentLocation = newLocation
+      loadMoreData()
+      locationManager.stopUpdatingLocation()
+    }
+  }
 }

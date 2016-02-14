@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 import AFNetworking
 import BDBOAuth1Manager
@@ -55,12 +56,18 @@ class YelpClient: BDBOAuth1RequestOperationManager {
     return searchWithTerm(term, sort: nil, categories: nil, deals: nil, completion: completion)
   }
   
-  func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, limit: Int? = nil, offset: Int? = nil, completion: ([Business]!, NSError!) -> Void) -> AFHTTPRequestOperation {
+  func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location:CLLocationCoordinate2D? = nil, limit: Int? = nil, offset: Int? = nil, completion: ([Business]!, NSError!) -> Void) -> AFHTTPRequestOperation {
     
     // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
     
     // Default the location to San Francisco
-    var parameters: [String : AnyObject] = ["term": term, "ll": "37.785771,-122.406165"]
+    var parameters: [String : AnyObject] = ["term": term]
+    if let location = location {
+      parameters["ll"] = "\(location.latitude),\(location.longitude)"
+    }
+    else {
+      parameters["ll"] = "30.618891,-96.338915"
+    }
     if let limit = limit {
       parameters["limit"] = limit
     }

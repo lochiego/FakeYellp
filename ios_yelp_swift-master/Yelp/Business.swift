@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class Business: NSObject {
     let name: String?
@@ -88,7 +89,7 @@ class Business: NSObject {
         YelpClient.sharedInstance.searchWithTerm(term, completion: completion)
     }
     
-  class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, limit: Int? = nil, offset: Int? = nil, completion: ([Business]!, NSError!) -> Void) -> Void {
-    YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, limit: limit, offset: offset, completion: completion)
+  class func searchWithTerm(term: String, sort: YelpSortMode?, categories: [String]?, deals: Bool?, location:CLLocationCoordinate2D? = nil, limit: Int? = nil, offset: Int? = nil, completion: ([Business]!, NSError!) -> Void) -> Void {
+    YelpClient.sharedInstance.searchWithTerm(term, sort: sort, categories: categories, deals: deals, location: location, limit: limit, offset: offset, completion: completion)
     }
 }
